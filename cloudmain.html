@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html>
+  <style type="text/css">
+
+	#canvas{
+		text-align:center;
+		margin-top:125px;
+	}
+	body{
+		background-color:#EEE8E8;
+	}
+	label,textarea,button{
+	  display:inline-block;
+	  vertical-align:middle;
+	}
+
+</style>
 <head>
+
+	<script type="text/javascript" src="d3.v3.js" charset="utf-8"></script>
+	<script src="d3.layout.cloud.js"></script>
 	<h1>
 		Tumblr Word Cloud
 	</h1>
 </head>
 <body>
 
-	<FORM name="getcloud" action = "process.php" method = "POST">
-	<label>Tumblr Name: </label><input type="text" name="name">
-	<input type="submit" value="Generate Cloud">
-	</FORM>
-
+	<div>
+	<p><label>Tumblr Name: </label><textarea type="text" id="name" rows="1"></textarea>
+	<button type="submit" value="Generate Cloud" onclick="createcloud()">submit</button></p>
+	</div>
+<div id="canvas"></div>
 </body>
+<script src="gencloud.js"></script>
 </html>
