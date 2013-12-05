@@ -16,9 +16,10 @@
 
 </style>
 <head>
-
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script type="text/javascript" src="d3.v3.js" charset="utf-8"></script>
 	<script src="d3.layout.cloud.js"></script>
+	<script src="gencloud.js"></script>
 	<h1>
 		Tumblr Word Cloud
 	</h1>
@@ -26,10 +27,13 @@
 <body>
 
 	<div>
-	<p><label>Tumblr Name: </label><textarea type="text" id="name" rows="1"></textarea>
-	<button type="submit" value="Generate Cloud" onclick="createcloud()">submit</button></p>
+	<FORM onsubmit="createcloud(); return false;">
+	<label>Tumblr Name: </label>
+	<input type="text" id="name"/>
+	<input type="submit" value="submit"/>
+	</FORM>
 	</div>
 <div id="canvas"></div>
 </body>
-<script src="gencloud.js"></script>
+
 </html>

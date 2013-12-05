@@ -1,6 +1,4 @@
 
-//  var tumblr = require('tumblr.js');
-
 
   //var color = d3.scale.ordinal().range(["#F77825","#D3CE3D","#F1EFA5", "#60B99A", "#CC2A41"]);
   
@@ -14,9 +12,27 @@
   var fontsize = d3.scale.log().range([18,80]);
   var cloud;
 
+  var key = 'v0mQ8w4YAXML1K79SzARtQLhK0K2dPLWiMQUn2p9nQbSmtPJ15';
+
+
+
+function tumbl(blogname){
+    $.ajax({
+      url: 'http://api.tumblr.com/v2/blog/'+blogname+'/posts?api_key='+key,
+      dataType: "jsonp",
+      notes_info: 'false',
+      success: function(data) { 
+        console.log(eval(data));
+       }
+    });
+  }
+
   function createcloud(){
     d3.select("svg")
        .remove();
+    var blogname = document.getElementById("name").value + ".tumblr.com";
+    console.log(blogname);
+    tumbl(blogname);
     words = [{ "text": "Heero", "size": 1 }, { "text": "Villain", "size": 6 }];
     cloud = d3.layout.cloud().size([width, height])
         .words(words)
