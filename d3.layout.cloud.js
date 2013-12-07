@@ -33,7 +33,6 @@
             d.padding = padding.call(this, d, i);
             return d;
           }).sort(function(a, b) { return b.size - a.size; });
-
       if (timer) clearInterval(timer);
       timer = setInterval(step, 0);
       step();
@@ -48,6 +47,7 @@
           d.x = (size[0] * (Math.random() + .5)) >> 1;
           d.y = (size[1] * (Math.random() + .5)) >> 1;
           cloudSprite(d, data, i);
+
           if (d.hasText && place(board, d, bounds)) {
             tags.push(d);
             event.word(d);
@@ -62,7 +62,9 @@
           cloud.stop();
           event.end(tags, bounds);
         }
+
       }
+
     }
 
     cloud.stop = function() {
@@ -80,6 +82,7 @@
     };
 
     function place(board, tag, bounds) {
+
       var perimeter = [{x: 0, y: 0}, {x: size[0], y: size[1]}],
           startX = tag.x,
           startY = tag.y,
@@ -103,6 +106,7 @@
         if (tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
             tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1]) continue;
         // TODO only check for collisions within current bounds.
+
         if (!bounds || !cloudCollide(tag, board, size[0])) {
           if (!bounds || collideRects(tag, bounds)) {
             var sprite = tag.sprite,
