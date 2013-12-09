@@ -10,27 +10,49 @@
   var key = 'v0mQ8w4YAXML1K79SzARtQLhK0K2dPLWiMQUn2p9nQbSmtPJ15';
   var filter = 'text';
 
-  var stopwords = /the|you|and|with|from|about|above|any|but|across|not|now|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
+  var stopwords = /the|you|and|with|from|about|above|any|but|across|not|got|had|because|said|now|get|out|who|say|via|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
   var maxwords = 200;
 
   var text = {};
+  var totalposts;
 function tumbl(blogname, callcount){
       $.ajax({
         url: 'http://api.tumblr.com/v2/blog/'+blogname+'/posts?api_key='+key+'&filter='+filter+'&offset='+callcount*20,
         dataType: "jsonp",
-        notes_info: 'false',
         async: false,
         success: function(data) {
+          if (data.meta.msg ==  "Not Found"){
+            console.log("blog doesn't exist!");
+            return;
+          }
+          if (data.response.blog['posts']<20){
+            console.log('blog does not have < 20 posts');
+            return;
+          }
+          totalposts = data.response.blog['posts'];
           for (var i=0;i<20;i++){
             text = parsetumbl(data.response.posts[i], data.response.posts[i].type, text);
           }
           callcount++;
-          if (callcount==2){
+          if (callcount==3 || callcount > totalposts/(callcount*20)){
             var jsonwords = [];
             for (var i in text){
               jsonwords.push({"text": i, "size": text[i]});
             }
             jsonwords = sortbycount(jsonwords).slice(0,maxwords);
+
+            var numOnewords = 0;
+            var numwords = 0;
+            for (var i in jsonwords){
+              if (jsonwords[i].size ==1){
+                numOnewords++;
+              }
+              numwords++;
+            }
+            if (numOnewords/numwords <= .15){
+              jsonwords = jsonwords.slice(0,numwords-numOnewords);
+            }
+            console.log(jsonwords);
             var words = jsonwords;
             width = Math.sqrt(words.length)*100;
             height = Math.min(Math.sqrt(words.length)*60,650);
@@ -43,7 +65,7 @@ function tumbl(blogname, callcount){
             .rotate(function() { return 0; })
             .on("end", draw)
             .start();
-           } else {
+           } else { 
             tumbl(blogname, callcount);
            }
          }
