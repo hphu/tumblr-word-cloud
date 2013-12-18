@@ -10,11 +10,14 @@
   var key = 'v0mQ8w4YAXML1K79SzARtQLhK0K2dPLWiMQUn2p9nQbSmtPJ15';
   var filter = 'text';
 
-  var stopwords = /the|you|and|with|from|about|above|any|but|across|not|got|had|because|said|now|get|out|who|say|via|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
+  var stopwords = /the|you|and|with|from|about|above|any|but|across|does|too|why|which|not|got|had|because|said|now|will|get|out|who|say|via|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
   var maxwords = 200;
 
   var text = {};
   var totalposts;
+  var progress = 0;
+  var isloading = false;
+
 function tumbl(blogname, callcount){
       $.ajax({
         url: 'http://api.tumblr.com/v2/blog/'+blogname+'/posts?api_key='+key+'&filter='+filter+'&offset='+callcount*20,
@@ -30,11 +33,21 @@ function tumbl(blogname, callcount){
             return;
           }
           totalposts = data.response.blog['posts'];
+
+          progress = (((callcount+1)*20/Math.min(Math.floor(totalposts/20)*20,100))*100);
+          $("#percent").text("Progress: " + progress + "%");
+          $("#progressbar").animate({width: (progress) + '%'},500);
+
           for (var i=0;i<20;i++){
             text = parsetumbl(data.response.posts[i], data.response.posts[i].type, text);
           }
+
           callcount++;
-          if (callcount==3 || callcount > totalposts/(callcount*20)){
+
+          if (callcount==5 || callcount == Math.floor(totalposts/20)){
+
+           $("#progress").stop( true, true ).fadeOut();
+           $("#progressbar").animate({width: "0%"},1).finish();
             var jsonwords = [];
             for (var i in text){
               jsonwords.push({"text": i, "size": text[i]});
@@ -52,7 +65,6 @@ function tumbl(blogname, callcount){
             if (numOnewords/numwords <= .15){
               jsonwords = jsonwords.slice(0,numwords-numOnewords);
             }
-            console.log(jsonwords);
             var words = jsonwords;
             width = Math.sqrt(words.length)*100;
             height = Math.min(Math.sqrt(words.length)*60,650);
@@ -65,7 +77,9 @@ function tumbl(blogname, callcount){
             .rotate(function() { return 0; })
             .on("end", draw)
             .start();
-           } else { 
+
+            isloading = false;
+           } else {
             tumbl(blogname, callcount);
            }
          }
@@ -120,6 +134,9 @@ function tumbl(blogname, callcount){
 
  function parsetext(txt){
   for (var i=0;i<txt.length-1;i++){
+    if(txt[i].indexOf('http:')!==-1){ //remove links
+      txt[i]='';
+    }
     txt[i] = txt[i].replace(/[^\w\s'\u2019]/gi, ''); //replaces all non-word-non-space & non-apostrophe characters
     txt[i] = txt[i].replace("\u2019", "'");
   }
@@ -127,10 +144,18 @@ function tumbl(blogname, callcount){
  }
 
   function createcloud(){
-    var blogname = document.getElementById("name").value + ".tumblr.com";
-    text = {};
-    tumbl(blogname,0);
+      if(!isloading){
+      progress = 0;
+      $("#percent").text("Progress: 0%");
+      $("#progressbar").css("width", "0px");
+      $("#progress").fadeIn('fast');
+      isloading = true;
+      var blogname = document.getElementById("name").value + ".tumblr.com";
+      text = {};
+      tumbl(blogname,0);
     }
+    }
+
 
   function draw(words) {
     d3.select("svg")

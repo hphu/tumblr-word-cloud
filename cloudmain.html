@@ -9,9 +9,37 @@
 	body{
 		background-color:#EEE8E8;
 	}
-	label,textarea,button{
-	  display:inline-block;
-	  vertical-align:middle;
+	#container{
+		width: 100%;
+	  	display:block;
+ 	 	vertical-align:middle;
+ 	 	text-align: center;
+	}
+
+	#progress{
+		 margin:auto;
+	     width:500px;
+	     height:26px;
+	}
+
+	#percent{
+		text-align:center;
+		position:absolute;
+		margin-left:5px;
+		margin-top:2px;
+		font-weight:bold;
+	}
+
+	#progressbar{
+     	background:#000000;
+     	opacity:.1;
+     	width:0%;
+     	height:26px;
+     	border-radius:7px;
+	}
+
+	form{
+		float:left;
 	}
 
 </style>
@@ -26,13 +54,20 @@
 </head>
 <body>
 
-	<div>
-	<FORM onsubmit="createcloud(); return false;">
+
+
+	<div id="container">
+	<FORM id="form" onsubmit="createcloud(); return false;">
 	<label>Tumblr Name: </label>
 	<input type="text" id="name"/>
 	<input type="submit" value="submit"/>
 	</FORM>
 	</div>
+<div id="progress">
+<span id="percent"></span>
+<div id="progressbar"></div>
+</div>
+
 <div id="canvas"></div>
 </body>
 
