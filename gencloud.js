@@ -1,7 +1,6 @@
 
 
   //var color = d3.scale.ordinal().range(["#F77825","#D3CE3D","#F1EFA5", "#60B99A", "#CC2A41"]);
-  
   var color = d3.scale.category20b();
   
   var width;
@@ -25,16 +24,18 @@ function tumbl(blogname, callcount){
         async: false,
         success: function(data) {
           if (data.meta.msg ==  "Not Found"){
-            console.log("blog doesn't exist!");
+            isloading=false;
+            $("#percent").text("blog doesn't exist!");
             return;
           }
           if (data.response.blog['posts']<20){
-            console.log('blog does not have < 20 posts');
+            $("#percent").text('blog does not have at least 20 posts');
+            isloading=false;
             return;
           }
           totalposts = data.response.blog['posts'];
 
-          progress = (((callcount+1)*20/Math.min(Math.floor(totalposts/20)*20,100))*100);
+          progress = Math.floor(((callcount+1)*20/Math.min(Math.floor(totalposts/20)*20,100))*100);
           $("#percent").text("Progress: " + progress + "%");
           $("#progressbar").animate({width: (progress) + '%'},500);
 
@@ -108,11 +109,7 @@ function tumbl(blogname, callcount){
         line = (post.description +" "+ post.title).split(/\s+/);
         break;
       case("chat"):
-        var textchat = ""
-        for (var i=0;i<post.dialogue.length;i++){
-           textchat += post.dialogue[i].phrase+" ";
-        }
-        line = textchat.split(/\s+/);
+        line = post.body.split(/\s+/);
         break;
       case("video"):
         line = post.caption.split(/\s+/);
@@ -146,7 +143,7 @@ function tumbl(blogname, callcount){
   function createcloud(){
       if(!isloading){
       progress = 0;
-      $("#percent").text("Progress: 0%");
+      //$("#percent").text("Progress: 0%");
       $("#progressbar").css("width", "0px");
       $("#progress").fadeIn('fast');
       isloading = true;
@@ -176,4 +173,5 @@ function tumbl(blogname, callcount){
           return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
         })
         .text(function(d) { return d.text; });
+    
   }
