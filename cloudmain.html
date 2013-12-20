@@ -50,13 +50,17 @@
 		font-family: Tahoma, Geneva, sans-serif;
 		color:#373B44;
 	}
-	input[type="submit"]{
+	input[type="submit"], button{
 		font-family: Tahoma, Geneva, sans-serif;
 		color:#EEE8E8;
 		background-color:#373B44;
 		border:none;
 		height:26px;
 		width: 70px;
+	}
+	button{
+		float:right;
+		margin-right:220px;
 	}
 
 </style>
@@ -79,7 +83,9 @@
 	<input type="text" id="name"/>
 	<input type="submit" value="submit"/>
 	</FORM>
+	<button id="reblog" onclick="reblog();">reblog</div>
 	</div>
+
 <div id="progress">
 <span id="percent"></span>
 <div id="progressbar"></div>

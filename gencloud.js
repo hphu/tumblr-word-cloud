@@ -4,12 +4,14 @@
   var color = d3.scale.category20b();
   
   var width;
+  var height;
   var fontsize;
+  var words;
 
   var key = 'v0mQ8w4YAXML1K79SzARtQLhK0K2dPLWiMQUn2p9nQbSmtPJ15';
   var filter = 'text';
 
-  var stopwords = /the|you|and|with|from|about|above|any|but|across|does|too|why|which|not|got|had|because|said|now|will|get|out|who|say|via|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
+  var stopwords = /the|you|and|with|from|about|above|any|but|across|does|too|why|which|not|though|per|got|had|because|said|now|will|get|out|who|say|via|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
   var maxwords = 200;
 
   var text = {};
@@ -66,7 +68,7 @@ function tumbl(blogname, callcount){
             if (numOnewords/numwords <= .15){
               jsonwords = jsonwords.slice(0,numwords-numOnewords);
             }
-            var words = jsonwords;
+            words = jsonwords;
             width = Math.sqrt(words.length)*100;
             height = Math.min(Math.sqrt(words.length)*60,650);
             fontsize = d3.scale.log().domain([jsonwords[jsonwords.length-1].size,jsonwords[0].size]).range([17,70]);
@@ -143,7 +145,12 @@ function tumbl(blogname, callcount){
   function createcloud(){
       if(!isloading){
       progress = 0;
-      //$("#percent").text("Progress: 0%");
+      var d3_category20b = [];
+      for (x in color.range()){
+        d3_category20b.push(color.range()[x]);
+      }
+      d3_category20b = shuffle(d3_category20b); //shuffle palette, words change color
+      color=d3.scale.ordinal().range(d3_category20b);
       $("#progressbar").css("width", "0px");
       $("#progress").fadeIn('fast');
       isloading = true;
@@ -167,11 +174,40 @@ function tumbl(blogname, callcount){
       .enter().append("text")
         .style("font-size", function(d) { return d.size + "px"; })
         .style("font-family", "Impact")
-        .style("fill", function(d, i) { return color(i); })
+        .style("fill", function(d) { return color(d.text); })
         .attr("text-anchor", "middle")
         .attr("transform", function(d) {
           return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
         })
         .text(function(d) { return d.text; });
-    
+
   }
+
+  function reblog(){
+      var image = document.createElement("canvas");
+      var ctx = image.getContext("2d");
+      image.width = width;
+      image.height = height;
+      ctx.translate(width/2, height/2);
+      for(var i=0;i<words.length;i++){
+        ctx.textAlign = "center";
+        ctx.save();
+        ctx.fillStyle = color(words[i].text);
+        ctx.font = words[i].size + "px " + words[i].font;
+        ctx.fillText(words[i].text, words[i].x, words[i].y);
+        ctx.restore();
+      }
+      document.body.appendChild(image);
+      var dl = image.toDataURL("image/png");
+      console.log(dl);
+  }
+
+  function shuffle(array) { //from fisher-yates
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
