@@ -19,6 +19,16 @@
   var progress = 0;
   var isloading = false;
 
+
+$( document ).ready(function() {
+    var tumblr_button = document.createElement("input");
+    tumblr_button.setAttribute("title", "Share on Tumblr");
+    tumblr_button.setAttribute("style", "display:inline-block; text-indent:-9999px; overflow:hidden; width:129px; height:20px; background:url('http://platform.tumblr.com/v1/share_3.png') top left no-repeat transparent;");
+    tumblr_button.setAttribute("id", "sharebtn");
+    tumblr_button.innerHTML = "Share on Tumblr";
+    document.getElementById("share").appendChild(tumblr_button);
+});
+
 function tumbl(blogname, callcount){
       $.ajax({
         url: 'http://api.tumblr.com/v2/blog/'+blogname+'/posts?api_key='+key+'&filter='+filter+'&offset='+callcount*20,
@@ -81,6 +91,7 @@ function tumbl(blogname, callcount){
             .on("end", draw)
             .start();
 
+            getimgur();
             isloading = false;
            } else {
             tumbl(blogname, callcount);
@@ -183,7 +194,7 @@ function tumbl(blogname, callcount){
 
   }
 
-  function reblog(){
+  function generateimage(){
       var image = document.createElement("canvas");
       var ctx = image.getContext("2d");
       image.width = width;
@@ -197,10 +208,10 @@ function tumbl(blogname, callcount){
         ctx.fillText(words[i].text, words[i].x, words[i].y);
         ctx.restore();
       }
-      document.body.appendChild(image);
-      var dl = image.toDataURL("image/png");
-      console.log(dl);
-  }
+      var imagelink = image.toDataURL();
+      //$("body").append(image).attr("id", "source");
+      return imagelink;
+    }
 
   function shuffle(array) { //from fisher-yates
     for (var i = array.length - 1; i > 0; i--) {
@@ -211,3 +222,30 @@ function tumbl(blogname, callcount){
     }
     return array;
 }
+
+  function getimgur(src){
+
+    var srcimg = generateimage();
+    srcimg = srcimg.replace(/^data:image\/(png|jpg);base64,/, "");
+
+    $.ajax({
+    url: 'https://api.imgur.com/3/upload',
+    type: 'POST',
+    async: false,
+    headers: {
+      Authorization: 'Client-ID a7619eeaf2bda1c'
+    },
+    data: {
+            image: srcimg
+    },
+    datatype: 'json',
+    success: function(data) {
+        if(data.success) {
+          //data.data.link;
+          document.getElementById('share').setAttribute("method", "POST");
+          document.getElementById('share').setAttribute("action", "http://www.tumblr.com/share/photo?source=" + encodeURIComponent(data.data.link));
+          document.getElementById('sharebtn').setAttribute("type","submit");
+        }
+      }
+    });
+  }

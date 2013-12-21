@@ -58,10 +58,11 @@
 		height:26px;
 		width: 70px;
 	}
-	button{
-		float:right;
+	#share {
+		float:right; 
 		margin-right:220px;
 	}
+
 
 </style>
 <head>
@@ -69,6 +70,7 @@
 	<script type="text/javascript" src="d3.v3.js" charset="utf-8"></script>
 	<script src="d3.layout.cloud.js"></script>
 	<script src="gencloud.js"></script>
+	<script src="http://platform.tumblr.com/v1/share.js"></script>
 	<h1>
 		Tumblr Word Cloud
 	</h1>
@@ -83,7 +85,8 @@
 	<input type="text" id="name"/>
 	<input type="submit" value="submit"/>
 	</FORM>
-	<button id="reblog" onclick="reblog();">reblog</div>
+	<FORM id="share" method='POST'>
+	</FORM>
 	</div>
 
 <div id="progress">
