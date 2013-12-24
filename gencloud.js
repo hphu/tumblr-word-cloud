@@ -19,16 +19,17 @@
   var progress = 0;
   var isloading = false;
 
-
-$( document ).ready(function() {
+//iniitialize tumblr share button
+$(document).ready(function() {
     var tumblr_button = document.createElement("input");
     tumblr_button.setAttribute("title", "Share on Tumblr");
-    tumblr_button.setAttribute("style", "display:inline-block; text-indent:-9999px; overflow:hidden; width:129px; height:20px; background:url('http://platform.tumblr.com/v1/share_3.png') top left no-repeat transparent;");
+    tumblr_button.setAttribute("style", "display:inline-block; text-indent:-9999px; overflow:hidden; width:129px; height:20px; border:none; background:url('http://platform.tumblr.com/v1/share_3.png') top left no-repeat transparent;");
     tumblr_button.setAttribute("id", "sharebtn");
     tumblr_button.innerHTML = "Share on Tumblr";
     document.getElementById("share").appendChild(tumblr_button);
 });
 
+//calls tumblr to get 20-100 posts
 function tumbl(blogname, callcount){
       $.ajax({
         url: 'http://api.tumblr.com/v2/blog/'+blogname+'/posts?api_key='+key+'&filter='+filter+'&offset='+callcount*20,
@@ -106,6 +107,7 @@ function tumbl(blogname, callcount){
     });
   }
 
+//called for each post, adds to and returns word count object
   function parsetumbl(post, type, text){
     var line = [];
     switch(type){
@@ -194,6 +196,7 @@ function tumbl(blogname, callcount){
 
   }
 
+  //generates a canvas based on the word cloud svg
   function generateimage(){
       var image = document.createElement("canvas");
       var ctx = image.getContext("2d");
@@ -213,6 +216,7 @@ function tumbl(blogname, callcount){
       return imagelink;
     }
 
+  //shuffles elements in an array; Used to randomize word color
   function shuffle(array) { //from fisher-yates
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -223,6 +227,7 @@ function tumbl(blogname, callcount){
     return array;
 }
 
+//uploads word cloud to imgur and sets the photolink tumblr share button to the imgur callback
   function getimgur(src){
 
     var srcimg = generateimage();
@@ -241,7 +246,6 @@ function tumbl(blogname, callcount){
     datatype: 'json',
     success: function(data) {
         if(data.success) {
-          //data.data.link;
           document.getElementById('share').setAttribute("method", "POST");
           document.getElementById('share').setAttribute("action", "http://www.tumblr.com/share/photo?source=" + encodeURIComponent(data.data.link));
           document.getElementById('sharebtn').setAttribute("type","submit");
