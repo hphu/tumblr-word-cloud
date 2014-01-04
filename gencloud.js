@@ -1,6 +1,6 @@
 
 
-  //var color = d3.scale.ordinal().range(["#F77825","#D3CE3D","#F1EFA5", "#60B99A", "#CC2A41"]);
+  //var color = d3.scale.ordinal().range(["#5254a3", "#6b6ecf", "#637939", "#8ca252", "#b5cf6b", " #843c39", "#ad494a", "#d6616b", "#a55194", "#ce6dbd", "#8c6d31","#bd9e39"]);
   var color = d3.scale.category20b();
   
   var width;
@@ -60,7 +60,7 @@ function tumbl(blogname, callcount){
 
           if (callcount==5 || callcount == Math.floor(totalposts/20)){
 
-           $("#progress").stop( true, true ).fadeOut();
+           $("#percent").text("");
            $("#progressbar").animate({width: "0%"},1).finish();
             var jsonwords = [];
             for (var i in text){
@@ -157,13 +157,14 @@ function tumbl(blogname, callcount){
 
   function createcloud(){
       if(!isloading){
+      setcolor(document.getElementById("colorselect").value);
       progress = 0;
-      var d3_category20b = [];
+      var d3_category = [];
       for (x in color.range()){
-        d3_category20b.push(color.range()[x]);
+        d3_category.push(color.range()[x]);
       }
-      d3_category20b = shuffle(d3_category20b); //shuffle palette, words change color
-      color=d3.scale.ordinal().range(d3_category20b);
+      d3_category = shuffle(d3_category); //shuffle palette, words change color
+      color=d3.scale.ordinal().range(d3_category);
       $("#progressbar").css("width", "0px");
       $("#progress").fadeIn('fast');
       isloading = true;
@@ -252,4 +253,24 @@ function tumbl(blogname, callcount){
         }
       }
     });
+  }
+
+  function setcolor(input){
+    switch(input){
+      case("default"):
+        color = d3.scale.category20b();
+        break;
+      case("grayscale"):
+        color= d3.scale.ordinal().range(["#1C1C1C", "#3B3B3B", "#969696", "#616161"]);
+        break;
+      case("tumblr"):
+        color= d3.scale.ordinal().range(["#2C4762", "#456179  ", "#668195", "#74822F", "#B7C963"]);
+        break;
+      case("sunny"):
+        color= d3.scale.ordinal().range(["#BB1A1A", "#DF8C26", "#6A4A3C", "#EDC951", "#80BCA3"]);
+        break;
+      case("night"):
+        color= d3.scale.ordinal().range(["#373338", "#93819C", "#416156", "#4C5F49", "#656E52"]);
+        break;
+    }
   }

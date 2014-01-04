@@ -53,7 +53,12 @@
 		height:26px;
 		width: 70px;
 	}
+
 	#share {
 		float:right; 
 		margin-right:220px;
+	}
+
+	select {
+		width:120px;
 	}
