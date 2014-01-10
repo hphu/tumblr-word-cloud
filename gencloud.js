@@ -11,7 +11,7 @@
   var key = 'v0mQ8w4YAXML1K79SzARtQLhK0K2dPLWiMQUn2p9nQbSmtPJ15';
   var filter = 'text';
 
-  var stopwords = /the|you|and|with|from|about|above|any|but|across|does|too|why|which|not|though|per|got|had|because|said|now|will|get|out|who|say|via|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
+  var stopwords = /the|you|and|with|from|about|above|any|but|across|does|too|why|which|not|been|ever|between|off|lot|more|those|something|some|much|don't|very|though|per|got|had|because|said|now|will|get|out|who|say|via|would|like|how|has|two|one|all|also|among|anyhow|are|around|back|became|become|replied|becomes|yourself|beside|each|else|just|from|only|than|then|was|were|that|itself|these|into|him|himself|her|herself|while|during|before|after|they|their|themselves|then|i'm|i'll|i'd|i've|he'd|he'll|she'd|she|she'll|he's|she's|we've|they've|it's|its|isn't|aren't|wasn't|weren't|his|this|did|have|can|for|what|when|our|most|have|even|should/
   var maxwords = 200;
 
   var text = {};
@@ -273,4 +273,4 @@ function tumbl(blogname, callcount){
         color= d3.scale.ordinal().range(["#373338", "#93819C", "#416156", "#4C5F49", "#656E52"]);
         break;
     }
-  }
+  } 
